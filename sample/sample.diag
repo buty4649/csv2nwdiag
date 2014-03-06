@@ -1,0 +1,17 @@
+nwdiag {
+	network network1 {
+		address ="192.168.1.0/24";
+
+		node1 [address = "192.168.1.1"];
+		node2 [address = "192.168.1.2"];
+		node3 [address = "192.168.1.3"];
+	}
+	network network2 {
+		address ="192.168.2.0/24";
+
+		node1 [address = "192.168.2.1"];
+		node2 [address = "192.168.2.2"];
+		node3 [address = "192.168.2.3"];
+		node4 [address = "192.168.2.4"];
+	}
+}

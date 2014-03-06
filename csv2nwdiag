@@ -1,0 +1,55 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use File::Basename;
+
+# 引数がない時は標準入力から読み込む
+push @ARGV,"-" if $#ARGV < 0;
+
+
+# ヘッダを出力
+print "nwdiag {\n";
+
+# 各ファイルをパース
+for my $file (@ARGV)
+{
+    # ファイルを開く
+    open my $fh, '<' . $file or die "can't open file...";
+    my @lines = <$fh>;
+    close $fh;
+
+    next if $#lines < 0;
+
+    # 変換処理 ----------------------------------------------------------------
+    # 1行目のネットワークアドレスを取得
+    my $network_address = (split /,/,shift @lines)[0];
+    chomp $network_address;
+
+    # ファイル名をネットワーク名に設定し出力
+    my $network_name = basename($file, '.csv');
+    # 標準入力ならネットワークアドレスにする
+    $network_name = qq/"$network_address"/ if $network_name eq "-";
+    print qq/\tnetwork $network_name {\n/;
+
+    # ネットワークアドレスを出力
+    print qq/\t\taddress ="$network_address";\n\n/;
+
+    # 2行目以降を出力する
+    # 書式:
+    #  IPアドレス,ホスト名
+    for my $line (@lines)
+    {
+        chomp $line;
+        my ($address, $hostname) = split /,/, $line;
+
+        print qq/\t\t$hostname [address = "$address"];\n/;
+    }
+
+    print "\t}\n";
+}
+
+# フッタを出力
+print "}";
+
+# vim:ft=perl:et:
